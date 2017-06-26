@@ -20,11 +20,6 @@
             </intent-filter>
         </activity>
 
-        <provider
-            android:name="cn.dashu.appjumpdemo.MyContentProvider"
-            android:authorities="cn.dashu.appjumpdemo"
-            android:exported="true"/>
-
     </application>
 
 </manifest>

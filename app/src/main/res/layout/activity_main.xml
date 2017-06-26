@@ -13,13 +13,31 @@
         android:text="高温："/>
 
     <TextView
-        android:id="@+id/center_temp"
+        android:id="@+id/min_temp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/max_temp"
         android:layout_centerHorizontal="true"
         android:padding="10dp"
-        android:text="中心（选点）："/>
+        android:text="低温："/>
+
+    <TextView
+        android:id="@+id/center_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/min_temp"
+        android:layout_centerHorizontal="true"
+        android:padding="10dp"
+        android:text="中心："/>
+
+    <TextView
+        android:id="@+id/touch_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/center_temp"
+        android:layout_centerHorizontal="true"
+        android:padding="10dp"
+        android:text="选点："/>
 
     <ImageView
         android:id="@+id/image"

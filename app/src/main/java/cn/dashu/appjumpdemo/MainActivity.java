@@ -32,7 +32,9 @@ public class MainActivity extends Activity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private TextView tvMaxTemp;
+    private TextView tvMinTemp;
     private TextView tvCenterTemp;
+    private TextView tvTouchTemp;
 
     private ImageView mImage;
 
@@ -42,7 +44,7 @@ public class MainActivity extends Activity {
 
     public static final int REQUEST_CODE_FOR_INFRARED = 0x1000;
 
-    public static final String JUMP_INFO = "cn.dashu.appjumpdemo";
+    public static final String JUMP_INFO = "get_infrared_info";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +66,9 @@ public class MainActivity extends Activity {
     private void initView() {
 
         tvMaxTemp = (TextView) findViewById(R.id.max_temp);
+        tvMinTemp = (TextView) findViewById(R.id.min_temp);
         tvCenterTemp = (TextView) findViewById(R.id.center_temp);
+        tvTouchTemp = (TextView) findViewById(R.id.touch_temp);
 
         mImage = (ImageView) findViewById(R.id.image);
 
@@ -101,12 +105,12 @@ public class MainActivity extends Activity {
         super.onResume();
 
         ContentResolver mResolver = getContentResolver();
-        Cursor mCursor = mResolver.query(Uri.parse("content://cn.dashu.appjumpdemo/infrared"), null, null, null, null);
+        Cursor mCursor = mResolver.query(Uri.parse("content://com.yado.camera/infrared"), null, null, null, null);
         if (mCursor != null) {
             //会执行完毕后清空数据，故游标只有一条记录
             while (mCursor.moveToNext()) {
 
-                String path = mCursor.getString(1);
+                String path = mCursor.getString(mCursor.getColumnIndex(InfraredInfo.COLUMN_PATH));
 
                 Log.e(TAG, "onResume: " + path);
 
@@ -114,11 +118,15 @@ public class MainActivity extends Activity {
 
                 mImage.setImageBitmap(bitmap);
 
-                double maxTemp = mCursor.getDouble(2);
-                double centerTemp = mCursor.getDouble(3);
+                float maxTemp = mCursor.getFloat(mCursor.getColumnIndex(InfraredInfo.COLUMN_MAX_TEMP));
+                float minTemp = mCursor.getFloat(mCursor.getColumnIndex(InfraredInfo.COLUMN_MIN_TEMP));
+                float centerTemp = mCursor.getFloat(mCursor.getColumnIndex(InfraredInfo.COLUMN_CENTER_TEMP));
+                float touchTemp = mCursor.getFloat(mCursor.getColumnIndex(InfraredInfo.COLUMN_TOUCH_TEMP));
 
-                tvMaxTemp.setText(String.format(Locale.getDefault(), "%.2f", maxTemp));
-                tvCenterTemp.setText(String.format(Locale.getDefault(), "%.2f", centerTemp));
+                tvMaxTemp.setText(String.format(Locale.getDefault(), "高温：%.2f", maxTemp));
+                tvMinTemp.setText(String.format(Locale.getDefault(), "低温：%.2f", minTemp));
+                tvCenterTemp.setText(String.format(Locale.getDefault(), "中心温度：%.2f", centerTemp));
+                tvTouchTemp.setText(String.format(Locale.getDefault(), "点击温度：%.2f", touchTemp));
 
 //                Bitmap bm = mBitmapUtil.decodeFile(newFile, mImageButtonAddImage.getWidth(), mImageButtonAddImage.getHeight());
 //                if (!mInfraredPathList.contains(path)) {
@@ -158,7 +166,7 @@ public class MainActivity extends Activity {
             }
 
             //清空数据
-            mResolver.delete(Uri.parse("content://cn.dashu.appjumpdemo/infrared"), Constant.PATH + "!=?", new String[]{" "});
+            mResolver.delete(Uri.parse("content://com.yado.camera/infrared"), InfraredInfo.COLUMN_PATH + "!=?", new String[]{" "});
 
             mCursor.close();
 
